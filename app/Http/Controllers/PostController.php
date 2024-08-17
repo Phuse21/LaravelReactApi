@@ -8,6 +8,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller implements HasMiddleware
 {
@@ -46,7 +47,11 @@ class PostController extends Controller implements HasMiddleware
 
         $post = $request->user()->posts()->create($fields);
 
-        return $post;
+        //format post with post resource
+
+        $formatPost = new PostResource($post);
+
+        return ApiHelper::response($formatPost, 'Post created successfully', 201);
     }
 
     /**
@@ -63,6 +68,7 @@ class PostController extends Controller implements HasMiddleware
      */
     public function update(Request $request, Post $post)
     {
+        Gate::authorize('modify', $post);
         //validation
         $fields = $request->validate([
             'title' => 'required',
@@ -71,7 +77,11 @@ class PostController extends Controller implements HasMiddleware
 
         $post->update($fields);
 
-        return $post;
+        //format post with post resource
+
+        $formatPost = new PostResource($post);
+
+        return ApiHelper::response($formatPost, 'Post updated successfully', 200);
     }
 
     /**
@@ -79,10 +89,10 @@ class PostController extends Controller implements HasMiddleware
      */
     public function destroy(Post $post)
     {
+        Gate::authorize('modify', $post);
+
         $post->delete();
 
-        return [
-            'message' => 'Post deleted successfully'
-        ];
+        return ApiHelper::response(null, 'Post deleted successfully', 200);
     }
 }

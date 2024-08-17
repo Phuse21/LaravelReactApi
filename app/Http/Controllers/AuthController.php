@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiHelper;
+use App\Http\Resources\AuthResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -20,10 +22,13 @@ class AuthController extends Controller
 
         $token = $user->createToken($request->name);
 
-        return [
-            'user' => $user,
-            'token' => $token->plainTextToken
-        ];
+        //attach token to user
+        $user->token = $token->plainTextToken;
+
+        //format user with auth resource
+        $formatUser = new AuthResource($user);
+
+        return ApiHelper::response($formatUser, 'User created successfully', 201);
     }
     public function login(Request $request)
     {
@@ -42,18 +47,19 @@ class AuthController extends Controller
 
         $token = $user->createToken($user->name);
 
-        return [
-            'user' => $user,
-            'token' => $token->plainTextToken
-        ];
+        //attach token to user
+        $user->token = $token->plainTextToken;
+
+        //format user with auth resource
+        $formatUser = new AuthResource($user);
+
+        return ApiHelper::response($formatUser, 'User logged in successfully', 200);
     }
     public function logout(Request $request)
     {
 
         $request->user()->tokens()->delete();
 
-        return [
-            'message' => 'Logged out'
-        ];
+        return ApiHelper::response(null, 'User logged out successfully', 200);
     }
 }
