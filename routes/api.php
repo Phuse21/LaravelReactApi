@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -8,7 +9,5 @@ use Illuminate\Support\Facades\Route;
 // })->middleware('auth:sanctum');
 
 Route::prefix('v1')->group(function () {
-    Route::get('/', function () {
-        return 'Api v1';
-    });
+    Route::apiResource('posts', PostController::class);
 });
