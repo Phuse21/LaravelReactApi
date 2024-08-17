@@ -3,12 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiHelper;
-use App\Http\Resources\ApiResource;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class PostController extends Controller
+class PostController extends Controller implements HasMiddleware
 {
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index', 'show']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -17,7 +26,7 @@ class PostController extends Controller
         $posts = Post::all();
 
         //format posts with api resource collection
-        $formattedPosts = ApiResource::collection($posts);
+        $formattedPosts = PostResource::collection($posts);
 
         //return formatted posts with api helper
 
@@ -35,7 +44,7 @@ class PostController extends Controller
             'body' => 'required',
         ]);
 
-        $post = Post::create($fields);
+        $post = $request->user()->posts()->create($fields);
 
         return $post;
     }
@@ -45,7 +54,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $formatPost = new ApiResource($post);
+        $formatPost = new PostResource($post);
         return ApiHelper::response($formatPost, 'Post fetched successfully', 200);
     }
 
