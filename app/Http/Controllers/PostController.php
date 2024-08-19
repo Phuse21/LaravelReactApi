@@ -49,6 +49,8 @@ class PostController extends Controller implements HasMiddleware
 
         //format post with post resource
 
+        // return ['post' => $post, 'user' => $post->user];
+
         $formatPost = new PostResource($post);
 
         return ApiHelper::response($formatPost, 'Post created successfully', 201);

@@ -16,7 +16,9 @@ class PostResource extends JsonResource
     {
         return [
             'title' => $this->title,
-            'body' => $this->body
+            'body' => $this->body,
+            'user_id' => $this->user_id,
+            'user' => new AuthResource(auth()->user())
         ];
     }
 }
