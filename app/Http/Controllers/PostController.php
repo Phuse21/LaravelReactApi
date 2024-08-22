@@ -10,27 +10,30 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Gate;
 
-class PostController extends Controller implements HasMiddleware
+// class PostController extends Controller implements HasMiddleware
+class PostController extends Controller
 {
 
-    public static function middleware(): array
-    {
-        return [
-            new Middleware('auth:sanctum', except: ['index', 'show']),
-        ];
-    }
+    // public static function middleware(): array
+    // {
+    //     return [
+    //         new Middleware('auth:sanctum', except: ['index', 'show']),
+    //     ];
+    // }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $posts = Post::all();
+
+        $posts = Post::with('user')
+            ->latest('id')
+            ->get();
 
         //format posts with api resource collection
         $formattedPosts = PostResource::collection($posts);
 
         //return formatted posts with api helper
-
         return ApiHelper::response($formattedPosts, 'Posts fetched successfully', 200);
     }
 
