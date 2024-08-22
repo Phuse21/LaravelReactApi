@@ -15,9 +15,12 @@ class PostResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'title' => $this->title,
             'body' => $this->body,
             'user_id' => $this->user_id,
+            "created_at" => $this->created_at->format('Y-m-d H:i:s'),
+            "updated_at" => $this->updated_at->format('Y-m-d H:i:s'),
             'user' => new AuthResource(auth()->user())
         ];
     }
