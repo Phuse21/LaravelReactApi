@@ -21,7 +21,11 @@ class PostResource extends JsonResource
             'user_id' => $this->user_id,
             "created_at" => $this->created_at->format('Y-m-d H:i:s'),
             "updated_at" => $this->updated_at->format('Y-m-d H:i:s'),
-            'user' => new AuthResource(auth()->user())
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+                'email' => $this->user->email,
+            ]
         ];
     }
 }

@@ -11,15 +11,15 @@ use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Gate;
 
 // class PostController extends Controller implements HasMiddleware
-class PostController extends Controller
+class PostController extends Controller implements HasMiddleware
 {
 
-    // public static function middleware(): array
-    // {
-    //     return [
-    //         new Middleware('auth:sanctum', except: ['index', 'show']),
-    //     ];
-    // }
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index', 'show']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
